@@ -4,14 +4,14 @@ export type Variant = {
 };
 
 export type Inventory = {
-  quantity: string;
+  quantity: number;
   inStock: boolean;
 };
 
 export type Product = {
   name: string;
   description: string;
-  price: string;
+  price: number;
   category: string;
   tags: string[];
   variants: Variant[];

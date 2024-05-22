@@ -7,7 +7,7 @@ const VariantSchema = new Schema({
 });
 
 const InventorySchema = new Schema({
-  quantity: { type: String, required: true },
+  quantity: { type: Number, required: true },
   inStock: { type: Boolean, required: true },
 });
 

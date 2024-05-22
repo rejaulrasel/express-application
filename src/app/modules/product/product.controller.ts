@@ -1,14 +1,27 @@
 import { Request, Response } from "express";
 import { ProductServices } from "./product.service";
+import ProductValidationSchema from "./product.validation";
 
 
 //this will call service function for create products function and then send respone to he client
 const createProduct = async (req: Request, res: Response) => {
     try {
+
+
         const { product } = req.body;
+        //validation by joi
+        const { error, value } = ProductValidationSchema.validate(product);
+        if (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Something went wrong',
+                error: error.details
+            })
+            return;
+        }
 
         //will call service function
-        const result = await ProductServices.createProductToDb(product);
+        const result = await ProductServices.createProductToDb(value);
 
         res.status(200).json({
             success: true,
