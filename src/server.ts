@@ -1,8 +1,9 @@
+import app from './app';
 import express from 'express'
 import mongoose from 'mongoose'
 import config from './app/config';
-const app = express()
-const port = 3000;
+
+
 
 //database connection
 async function main() {
@@ -17,8 +18,5 @@ async function main() {
     }
 }
 
-
-
-
-
-main()
+//calling main function
+main();
