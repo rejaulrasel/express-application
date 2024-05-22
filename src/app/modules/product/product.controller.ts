@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, query } from "express";
 import { ProductServices } from "./product.service";
 
 
@@ -26,9 +26,11 @@ const createProduct = async (req: Request, res: Response) => {
 
 //this will call service function for get all products function and then send respone to he client
 const getAllProducts = async (req: Request, res: Response) => {
-
     try {
+
         const result = await ProductServices.getAllProductsFromDb();
+
+
         res.status(200).json({
             success: true,
             message: " Products fetched successfully!",
@@ -36,7 +38,7 @@ const getAllProducts = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(200).json({
-            success: true,
+            success: false,
             message: "Something went wrong!",
             error: error,
         });
@@ -44,8 +46,7 @@ const getAllProducts = async (req: Request, res: Response) => {
 
 }
 
-//this will call service function for get all products function and then send respone to he client
-
+//this will call service function for get a single product and then send respone to he client
 const getSingleProduct = async (req: Request, res: Response) => {
     try {
         const productId = req.params.productId;
@@ -67,8 +68,58 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
 }
 
+//this will call service function for deleting a single product and then send respone to he client
+const deleleSingleProduct = async (req: Request, res: Response) => {
+
+    try {
+        const productId = req.params.productId
+        const result = await ProductServices.deleteSingleProductFromDb(productId)
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully!",
+            data: result,
+        });
+    } catch (error) {
+        const productId = req.params.productId
+        const result = await ProductServices.deleteSingleProductFromDb(productId)
+
+        res.status(200).json({
+            success: false,
+            message: "Something went wrong",
+            error,
+        });
+    }
+}
+
+const updateSingleProduct = async (req: Request, res: Response) => {
+    try {
+        const productId = req.params.productId;
+        const { product } = req.body;
+        const result = await ProductServices.updateSingleProductToDb(productId, product);
+
+        res.status(200).json({
+            success: true,
+            message: "Product updated successfully!",
+            data: result,
+        });
+
+    } catch (error) {
+        res.status(200).json({
+            success: false,
+            message: "Something went wrong!",
+            error,
+        });
+    }
+
+}
+
+
+
 export const ProductControllers = {
     createProduct,
     getAllProducts,
     getSingleProduct,
+    deleleSingleProduct,
+    updateSingleProduct,
 };

@@ -8,6 +8,7 @@ const createProductToDb = async (product: Product) => {
 
 
 const getAllProductsFromDb = async () => {
+
     const result = await ProductModel.find();
 
     return result;
@@ -15,12 +16,24 @@ const getAllProductsFromDb = async () => {
 
 
 const getSingleProductFromDb = async (productId: string) => {
-    const result = await ProductModel.find({ _id: productId })
+    const result = await ProductModel.findOne({ _id: productId })
     return result;
+}
+
+const deleteSingleProductFromDb = async (productId: string) => {
+    const result = await ProductModel.deleteOne({ _id: productId })
+    return result;
+}
+
+const updateSingleProductToDb = async (productId: string, product: Product) => {
+    const result = await ProductModel.updateOne({ _id: productId }, { $set: { ...product } })
+    return result
 }
 
 export const ProductServices = {
     createProductToDb,
     getAllProductsFromDb,
     getSingleProductFromDb,
+    deleteSingleProductFromDb,
+    updateSingleProductToDb,
 };
