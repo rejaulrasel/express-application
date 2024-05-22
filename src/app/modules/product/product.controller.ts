@@ -24,7 +24,7 @@ const createProduct = async (req: Request, res: Response) => {
     }
 };
 
-//this will call service function for get all products function and then send respone to he client
+//this will call service function for gettting all products function and then send respone to he client
 const getAllProducts = async (req: Request, res: Response) => {
     try {
         const { searchTerm } = req.query;
@@ -39,7 +39,7 @@ const getAllProducts = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(200).json({
             success: false,
-            message: "Something went wrong!",
+            message: "Products fethced failed",
             error: error,
         });
     }
