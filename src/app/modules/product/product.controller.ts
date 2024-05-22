@@ -16,9 +16,9 @@ const createProduct = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        res.status(200).json({
+        res.status(500).json({
             success: false,
-            message: "Something went wrong!",
+            message: "Failed to create product!",
             error: error,
         });
     }
@@ -27,13 +27,13 @@ const createProduct = async (req: Request, res: Response) => {
 //this will call service function for get all products function and then send respone to he client
 const getAllProducts = async (req: Request, res: Response) => {
     try {
-
-        const result = await ProductServices.getAllProductsFromDb();
+        const { searchTerm } = req.query;
+        const result = await ProductServices.getAllProductsFromDb(searchTerm as string);
 
 
         res.status(200).json({
             success: true,
-            message: " Products fetched successfully!",
+            message: searchTerm ? `Products matching search term ${searchTerm} fetched successfully!` : " Products fetched successfully!",
             data: result,
         });
     } catch (error) {
@@ -58,7 +58,7 @@ const getSingleProduct = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        res.status(200).json({
+        res.status(500).json({
             success: false,
             message: "Product Not Found!",
             error,
@@ -81,12 +81,9 @@ const deleleSingleProduct = async (req: Request, res: Response) => {
             data: result,
         });
     } catch (error) {
-        const productId = req.params.productId
-        const result = await ProductServices.deleteSingleProductFromDb(productId)
-
-        res.status(200).json({
+        res.status(500).json({
             success: false,
-            message: "Something went wrong",
+            message: "Product deletion failed!",
             error,
         });
     }
@@ -105,9 +102,9 @@ const updateSingleProduct = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        res.status(200).json({
+        res.status(500).json({
             success: false,
-            message: "Something went wrong!",
+            message: "Product update causes failed",
             error,
         });
     }
