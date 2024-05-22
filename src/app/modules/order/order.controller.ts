@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { OrderServices } from "./order..service";
+import OrderValidationSchema from "./order.validation";
 
 
 //this will call service function for create orders and then send respone to he client
@@ -7,7 +8,21 @@ const createOrder = async (req: Request, res: Response) => {
 
     try {
         const { order } = req.body;
-        const result = await OrderServices.createOrderToDb(order);
+
+        //validation by joi
+        const { error, value } = OrderValidationSchema.validate(order);
+        if (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Something went wrong',
+                error: error.details
+            })
+            return;
+        }
+
+
+
+        const result = await OrderServices.createOrderToDb(value);
 
         res.status(200).json({
             success: true,
