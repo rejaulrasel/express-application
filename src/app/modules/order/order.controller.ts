@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { OrderServices } from "./order..service";
 import OrderValidationSchema from "./order.validation";
 import { ProductModel } from "../product/product.model";
-import { boolean } from "joi";
 
 //this will call service function for create orders and then send respone to he client
 const createOrder = async (req: Request, res: Response) => {
@@ -24,39 +23,42 @@ const createOrder = async (req: Request, res: Response) => {
 
     //get orderQuantity, orderedProductId from validated data by joi
     const { productId: orderedProductId, quantity: orderQuantity } = value;
-
     //finding the ordered product
-    const productInfo = await ProductModel.findOne({ _id: orderedProductId })
+    const productInfo = await ProductModel.findOne({ _id: orderedProductId });
 
-    //get productQuantity and productStock from ordered product 
-    let { quantity: productQuantity, inStock: productStock } = productInfo.inventory;
-
+    //get productQuantity and productStock from ordered product
+    const productQuantity: number = productInfo?.inventory?.quantity ?? 0;
+    let productStock = productInfo?.inventory?.inStock;
 
     //check if the order quantity is higher than productQuantity
     if (orderQuantity > productQuantity) {
       res.status(500).json({
         success: false,
-        message: "Insufficient quantity available in inventory"
-      })
+        message: "Insufficient quantity available in inventory",
+      });
       return;
     }
 
     // update the product quantity after subtracting the order quantity
     const updatedQuantity: number = productQuantity - orderQuantity;
 
-    // update the product stock status when stock reaches to zero it will false 
+    // update the product stock status when stock reaches to zero it will false
     if (updatedQuantity < 1) {
       productStock = false;
     }
 
     //put the updated information to the product
-    const updatedProduct = await ProductModel.updateOne({ _id: orderedProductId }, { "inventory.quantity": updatedQuantity, "inventory.inStock": productStock })
-
-
-
+    await ProductModel.updateOne(
+      { _id: orderedProductId },
+      {
+        "inventory.quantity": updatedQuantity,
+        "inventory.inStock": productStock,
+      },
+    );
 
     //call service function
     const result = await OrderServices.createOrderToDb(value);
+
     res.status(200).json({
       success: true,
       message: "Order created successfully!",
@@ -77,6 +79,7 @@ const getAllOrders = async (req: Request, res: Response) => {
   try {
     const { email } = req.query;
     const result = await OrderServices.getAllOrdersFromDb(email as string);
+
     res.status(200).json({
       success: true,
       message:

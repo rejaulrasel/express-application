@@ -8,7 +8,9 @@ const VariantValidationSchema = Joi.object({
 
 // Define Joi ValidationSchema for Inventory
 const InventoryValidationSchema = Joi.object({
-  quantity: Joi.number().required(),
+  quantity: Joi.number().greater(0).required().messages({
+    "number.greater": "Quantity must be greater than 0",
+  }),
   inStock: Joi.boolean().required(),
 });
 

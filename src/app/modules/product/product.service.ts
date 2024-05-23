@@ -36,7 +36,7 @@ const deleteSingleProductFromDb = async (productId: string) => {
 const updateSingleProductToDb = async (productId: string, product: Product) => {
   const result = await ProductModel.updateOne(
     { _id: productId },
-    { $set: { ...product } },
+    { $set: product },
   );
   return result;
 };
