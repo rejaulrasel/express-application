@@ -13,7 +13,7 @@ app.use("/api/products", StudentRoutes);
 app.use("/api/orders", OrderRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Assalamualaikum!");
+  res.send("Assalamualaikum");
 });
 
 //not found route
