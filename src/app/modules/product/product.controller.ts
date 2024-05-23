@@ -5,7 +5,7 @@ import ProductValidationSchema from "./product.validation";
 //this will call service function for create products function and then send respone to he client
 const createProduct = async (req: Request, res: Response) => {
   try {
-    const { product } = req.body;
+    const product = req.body;
     //validation by joi
     const { error, value } = ProductValidationSchema.validate(product);
     if (error) {
@@ -109,7 +109,7 @@ const deleleSingleProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Product deleted successfully!",
-      data: result,
+      data: null,
     });
   } catch (error) {
     res.status(500).json({

@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { OrderServices } from "./order..service";
+import { OrderServices } from "./order.service";
 import OrderValidationSchema from "./order.validation";
 import { ProductModel } from "../product/product.model";
 
 //this will call service function for create orders and then send respone to he client
 const createOrder = async (req: Request, res: Response) => {
   try {
-    const { order } = req.body;
+    const order = req.body;
 
     //validation by joi
     const { error, value } = OrderValidationSchema.validate(order);
@@ -30,6 +30,14 @@ const createOrder = async (req: Request, res: Response) => {
     const productQuantity: number = productInfo?.inventory?.quantity ?? 0;
     let productStock = productInfo?.inventory?.inStock;
 
+    //if any order will create a invalid product id it causes error
+    if (productQuantity == 0) {
+      res.status(500).json({
+        success: false,
+        message: "Invalid product id",
+      });
+      return;
+    }
     //check if the order quantity is higher than productQuantity
     if (orderQuantity > productQuantity) {
       res.status(500).json({

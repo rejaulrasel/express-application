@@ -16,7 +16,7 @@ const InventoryValidationSchema = Joi.object({
 
 // Define Joi ValidationSchema for Product
 const ProductValidationSchema = Joi.object({
-  name: Joi.string().max(20).required(),
+  name: Joi.string().max(50).required(),
   description: Joi.string().required(),
   price: Joi.number().required(),
   category: Joi.string().required(),
